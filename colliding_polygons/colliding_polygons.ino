@@ -9,7 +9,7 @@
 int _inputValues[NUMBER_OF_INPUTS];
 Voice _voices[NUMBER_OF_INPUTS];
 
-
+AudioControlSGTL5000 _codec;
 AudioMixer4 _mixer;
 AudioOutputI2S _audioOut;
 AudioConnection _mixer2Output(_mixer, 0, _audioOut, 0);
@@ -25,7 +25,9 @@ void setup() {
   //  setup audio
   AudioMemory(15);
   AudioNoInterrupts();
-
+  _codec.enable();
+  _codec.volume(0.45);
+  
   for (auto i = 0; i < NUMBER_OF_INPUTS; i++) {
     AudioConnection(_voices[i]._amp, 0,  _mixer, i);//TODO: add more mixers for >4 voices
     _mixer.gain(i, 0.25);//set each channel to 1/4

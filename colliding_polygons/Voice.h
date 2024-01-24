@@ -40,14 +40,17 @@ class Voice {
     }
 
     void noteOn(int note, int velocity = 127) {
+      AudioNoInterrupts();
+
       _oscillator.begin(AMPLITUDE * velocity2amplitude[velocity - 1],
                         mtof(note),
                         WAVEFORM_SINE);
       _env.noteOn();
-
+      AudioInterrupts();
     }
     void noteOff() {
       _env.noteOff();
+      _oscillator.amplitude(0);
     }
     AudioSynthWaveform _oscillator;
     AudioEffectEnvelope _env;
