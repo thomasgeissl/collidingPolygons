@@ -54,4 +54,6 @@ void loop() {
       _voices[i].noteOff();
     }
   }
+      // Store current input values for the next iteration
+    _inputValues[i] = inputValues[i];
 }
