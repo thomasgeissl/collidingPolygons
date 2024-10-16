@@ -14,12 +14,13 @@ AudioMixer4 _mixer;
 AudioOutputI2S _audioOut;
 AudioConnection _mixer2Output(_mixer, 0, _audioOut, 0);
 
-
-void setup() {
+void setup()
+{
   //  setup serial
   Serial.begin(115200);
   //  setup inputs
-  for (auto i = 0; i < NUMBER_OF_INPUTS; i++) {
+  for (auto i = 0; i < NUMBER_OF_INPUTS; i++)
+  {
     pinMode(INPUT_PINS[i], INPUT_PULLUP);
   }
   //  setup audio
@@ -27,33 +28,56 @@ void setup() {
   AudioNoInterrupts();
   _codec.enable();
   _codec.volume(0.45);
-  
-  for (auto i = 0; i < NUMBER_OF_INPUTS; i++) {
-    AudioConnection(_voices[i]._amp, 0,  _mixer, i);//TODO: add more mixers for >4 voices
-    _mixer.gain(i, 0.25);//set each channel to 1/4
+
+  for (auto i = 0; i < NUMBER_OF_INPUTS; i++)
+  {
+    AudioConnection(_voices[i]._amp, 0, _mixer, i); // TODO: add more mixers for >4 voices
+    _mixer.gain(i, 0.25);                           // set each channel to 1/4
   }
 }
 
-void loop() {
+void loop()
+{
   //  read inputs
   int inputValues[NUMBER_OF_INPUTS];
-  for (auto i = 0; i < NUMBER_OF_INPUTS; i++) {
+  for (auto i = 0; i < NUMBER_OF_INPUTS; i++)
+  {
     inputValues[i] = digitalRead(INPUT_PINS[i]);
 
     //    if collision detected, but not at previous frame
-    if (inputValues[i] && _inputValues[i] != inputValues[i]) {
+    if (inputValues[i] && _inputValues[i] != inputValues[i])
+    {
       Serial.print("trigger note on: ");
       Serial.println(_notes[i]);
       _voices[i].noteOn(_notes[i], 100);
     }
 
     //    if no collision detected, but there was a collision at previous frame
-    if (!inputValues[i] && _inputValues[i] != inputValues[i]) {
+    if (!inputValues[i] && _inputValues[i] != inputValues[i])
+    {
       Serial.print("trigger note off: ");
       Serial.println(_notes[i]);
       _voices[i].noteOff();
     }
   }
-      // Store current input values for the next iteration
-    _inputValues[i] = inputValues[i];
+  // Store current input values for the next iteration
+  memcpy(_inputValues, inputValues, sizeof(inputValues));
+
+  // Check for serial input
+  if (Serial.available())
+  {
+    char command = Serial.read();
+
+    // Trigger or stop voice based on serial input
+    if (command == 'a')
+    {
+      Serial.println("Serial trigger: Voice 1 ON");
+      _voices[0].noteOn(_notes[0], 100); // Trigger Voice 1
+    }
+    else if (command == 'b')
+    {
+      Serial.println("Serial trigger: Voice 1 OFF");
+      _voices[0].noteOff(); // Stop Voice 1
+    }
+  }
 }
