@@ -25,34 +25,31 @@ float mtof(float note) {
 }
 
 class Voice {
-  public:
-    Voice() {
-      AudioConnection oscillator2env(_oscillator, _env);
-      AudioConnection env2amp(_env, _amp);
+public:
+  Voice() {
+    AudioConnection oscillator2env(_oscillator, _env);
+    // AudioConnection env2amp(_env, _amp);
 
-      _env.attack(9.2);
-      _env.hold(2.1);
-      _env.decay(31.4);
-      _env.sustain(0.6);
-      _env.release(84.5);
+    //AudioConnection env2amp(_env, 0, _amp, 0);
 
-      _amp.gain(1);
-    }
+    _env.attack(50);
+    _env.decay(50);
+    _env.release(250);
+    _amp.gain(1);
+  }
 
-    void noteOn(int note, int velocity = 127) {
-      AudioNoInterrupts();
+  void noteOn(int note, int velocity = 127) {
+    AudioNoInterrupts();
 
-      _oscillator.begin(AMPLITUDE * velocity2amplitude[velocity - 1],
-                        mtof(note),
-                        WAVEFORM_SINE);
-      _env.noteOn();
-      AudioInterrupts();
-    }
-    void noteOff() {
-      _env.noteOff();
-      _oscillator.amplitude(0);
-    }
-    AudioSynthWaveform _oscillator;
-    AudioEffectEnvelope _env;
-    AudioAmplifier _amp;
+    _oscillator.begin(1, mtof(note), WAVEFORM_SINE);
+    _env.noteOn();
+    AudioInterrupts();
+  }
+  void noteOff() {
+    _env.noteOff();
+    _oscillator.amplitude(0);
+  }
+  AudioSynthWaveform _oscillator;
+  AudioEffectEnvelope _env;
+  AudioAmplifier _amp;
 };
