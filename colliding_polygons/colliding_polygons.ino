@@ -15,14 +15,14 @@ AudioMixer4 _mixer1;      // Mischer für die ersten 4 Stimmen
 AudioMixer4 _mixer2;      // Mischer für die nächsten 4 Stimmen
 AudioMixer4 _finalMixer;  // Endmischer für alle Stimmen
 AudioOutputI2S _audioOut;
-AudioConnection _mixer2Output(_finalMixer, 0, _audioOut, 0);
-AudioConnection _mixer2Output1(_finalMixer, 0, _audioOut, 1);
+AudioConnection _mixerToOutputLeft(_finalMixer, 0, _audioOut, 0);
+AudioConnection _mixerToOutputRight(_finalMixer, 0, _audioOut, 1);
 
 // AudioConnection _osc0toFinalMixer0(_voices[0]._env, 0, _finalMixer, 0);  //TODO: add more mixers for >4 voices
 
-AudioConnection _osc0toFinalMixer0(_voices[0]._oscillator, 0, _finalMixer, 0);  //TODO: add more mixers for >4 voices
-AudioConnection _osc1toFinalMixer0(_voices[1]._oscillator, 0, _finalMixer, 1);  //TODO: add more mixers for >4 voices
-AudioConnection _osc2toFinalMixer0(_voices[2]._oscillator, 0, _finalMixer, 2);  //TODO: add more mixers for >4 voices
+AudioConnection _osc0toFinalMixer0(_voices[0]._amp, 0, _finalMixer, 0);  //TODO: add more mixers for >4 voices
+AudioConnection _osc1toFinalMixer0(_voices[1]._amp, 0, _finalMixer, 1);  //TODO: add more mixers for >4 voices
+AudioConnection _osc2toFinalMixer0(_voices[2]._amp, 0, _finalMixer, 2);  //TODO: add more mixers for >4 voices
 
 
 void onNoteOn(byte channel, byte note, byte velocity) {
@@ -47,7 +47,6 @@ void onNoteOn(byte channel, byte note, byte velocity) {
   }
 }
 void onNoteOff(byte channel, byte note, byte velocity) {
-
   switch (note) {
     case 60:
       {
@@ -87,11 +86,6 @@ void setup() {
 
   _finalMixer.gain(0, 0.5);
   _finalMixer.gain(1, 0.5);
-
-  // for (auto i = 0; i < NUMBER_OF_INPUTS; i++) {
-  //   AudioConnection(_voices[i]._oscillator, 0, _finalMixer, i);  //TODO: add more mixers for >4 voices
-  //   _mixer1.gain(i, 0.25);                                       //set each channel to 1/4
-  // }
 }
 
 void loop() {

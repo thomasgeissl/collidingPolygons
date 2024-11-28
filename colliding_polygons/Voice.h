@@ -26,11 +26,8 @@ float mtof(float note) {
 
 class Voice {
 public:
-  Voice() {
-    AudioConnection oscillator2env(_oscillator, _env);
-    // AudioConnection env2amp(_env, _amp);
-
-    //AudioConnection env2amp(_env, 0, _amp, 0);
+  Voice()
+    : _oscillatorToEnv(_oscillator, _env), _envToAmp(_env, _amp) {
 
     _env.attack(50);
     _env.decay(50);
@@ -40,6 +37,7 @@ public:
 
   void noteOn(int note, int velocity = 127) {
     AudioNoInterrupts();
+    // TODO: what to do with velocity? we could use an a gain value from the table above and set the amps gain or somehow apply the velocity to the env parameters
 
     _oscillator.begin(1, mtof(note), WAVEFORM_SINE);
     _env.noteOn();
@@ -52,4 +50,6 @@ public:
   AudioSynthWaveform _oscillator;
   AudioEffectEnvelope _env;
   AudioAmplifier _amp;
+  AudioConnection _oscillatorToEnv;
+  AudioConnection _envToAmp;
 };
