@@ -27,12 +27,17 @@ float mtof(float note) {
 class Voice {
 public:
   Voice()
-    : _oscillatorToEnv(_oscillator, _env), _envToAmp(_env, _amp) {
+    : _oscillatorToEnv(_oscillator, _env),
+      _envToFilterLop(_env, _filterLop),
+      _filterLopToFilterHip(_filterLop, _filterHip),
+      _filterHipToAmp(_filterHip, _amp) {
 
     _env.attack(50);
     _env.decay(50);
     _env.release(250);
     _amp.gain(1);
+    _filterLop.setLowpass(0, 440, 0.5);
+    _filterHip.setHighpass(0, 220, 0.5);
   }
 
   void noteOn(int note, int velocity = 127) {
@@ -51,5 +56,9 @@ public:
   AudioEffectEnvelope _env;
   AudioAmplifier _amp;
   AudioConnection _oscillatorToEnv;
-  AudioConnection _envToAmp;
+  AudioConnection _envToFilterLop;
+  AudioConnection _filterLopToFilterHip;
+  AudioConnection _filterHipToAmp;
+  AudioFilterBiquad _filterLop;
+  AudioFilterBiquad _filterHip;
 };

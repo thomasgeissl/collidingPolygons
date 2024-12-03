@@ -11,8 +11,8 @@ int _inputValues[NUMBER_OF_INPUTS];
 Voice _voices[NUMBER_OF_INPUTS];
 
 AudioControlSGTL5000 _codec;
-AudioMixer4 _mixer1;      // Mischer für die ersten 4 Stimmen
-AudioMixer4 _mixer2;      // Mischer für die nächsten 4 Stimmen
+//AudioMixer4 _mixer1;      // Mischer für die ersten 4 Stimmen
+//AudioMixer4 _mixer2;      // Mischer für die nächsten 4 Stimmen
 AudioMixer4 _finalMixer;  // Endmischer für alle Stimmen
 AudioOutputI2S _audioOut;
 AudioConnection _mixerToOutputLeft(_finalMixer, 0, _audioOut, 0);
